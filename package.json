@@ -1,0 +1,29 @@
+{
+  "name": "slurpee",
+  "version": "0.1.0",
+  "description": "Pre-configured gulp implementation",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/rschmukler/slurpee"
+  },
+  "keywords": [
+    "gulp"
+  ],
+  "author": "Ryan Schmukler <ryan@slingingcode.com> (http://slingingcode.com/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rschmukler/slurpee/issues"
+  },
+  "homepage": "https://github.com/rschmukler/slurpee",
+  "devDependencies": {
+    "expect.js": "~0.3.1",
+    "mocha": "~1.20.1"
+  },
+  "dependencies": {
+    "gulp": "~3.8.5"
+  }
+}
