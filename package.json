@@ -28,6 +28,12 @@
     "stream-series": "~0.1.0",
     "gulp-insert": "~0.4.0",
     "gulp-util": "~2.2.19",
-    "gulp-autoprefixer": "0.0.8"
+    "gulp-autoprefixer": "0.0.8",
+    "rework-mixins": "~1.1.1",
+    "rework-variant": "~0.2.2",
+    "rework-math": "~1.0.1",
+    "rework-shade": "~1.4.3",
+    "rework-grid": "~0.1.2",
+    "gulp-rework": "~0.3.0"
   }
 }

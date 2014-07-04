@@ -1,3 +1,5 @@
+// Gulp plugins
+
 var gulp = require('gulp'),
     read = require('fs').readFileSync,
     gutil = require('gulp-util'),
@@ -6,6 +8,12 @@ var gulp = require('gulp'),
     wrap = require('gulp-insert').wrap,
     transform = require('gulp-insert').transform,
     autoprefixer = require('gulp-autoprefixer');
+
+// Rework plugins
+var reworkVariables = require('rework-varient'),
+    reworkShade = require('rework-shade'),
+    reworkMixins = require('rework-mixins'),
+    reworkMath = require('rework-math');
 
 var slurpee = module.exports = {
   gulp: gulp,
@@ -22,6 +30,7 @@ var slurpee = module.exports = {
     jadePaths: ['lib/components/**/*.jade', 'lib/pages/**/*.jade'],
     liveReloadPort: 35729,
     outputDir: 'public/',
+    reworkPlugins: [rework.mixin(reworkMixins), rework.extend(), rework.references(), reworkVariables(), rework.colors(), reworkMath(), reworkShade()];
     serverJadePaths: ['lib/express-pages/**/*.jade'],
     stylGlobals: [],
     stylPaths: ['lib/**/*.styl'],
