@@ -1,23 +1,36 @@
+// Internals...
+
+var build = require('./lib/build');
+
 // Gulp plugins
 
 var gulp = require('gulp'),
     read = require('fs').readFileSync,
     gutil = require('gulp-util'),
+    surgeon = require('gulp-surgeon'),
+    component = require('gulp-component'),
     series = require('stream-series'),
     prepend = require('gulp-insert').prepend,
     wrap = require('gulp-insert').wrap,
     transform = require('gulp-insert').transform,
-    autoprefixer = require('gulp-autoprefixer');
+    livereload = require('gulp-livereload'),
+    lrServer = require('tiny-lr')(),
+    autoprefixer = require('gulp-autoprefixer'),
+    cssWhitespace = require('gulp-css-whitespace');
 
-// Rework plugins
-var reworkVariables = require('rework-varient'),
+// Rework related requires
+var mixin = require('rework-plugin-mixin'),
+    reworkInherit = require('rework-inherit'),
+    reworkVariables = require('rework-variant'),
     reworkShade = require('rework-shade'),
     reworkMixins = require('rework-mixins'),
+    reworkColors = require('rework-plugin-colors'),
+    reworkReferences = require('rework-plugin-references'),
     reworkMath = require('rework-math');
 
 var slurpee = module.exports = {
   gulp: gulp,
-  configure: buildGulp
+  configure: buildGulp,
   config: {
     assetPaths: [
       'lib/components/**/{images,files}/*',
@@ -30,7 +43,7 @@ var slurpee = module.exports = {
     jadePaths: ['lib/components/**/*.jade', 'lib/pages/**/*.jade'],
     liveReloadPort: 35729,
     outputDir: 'public/',
-    reworkPlugins: [rework.mixin(reworkMixins), rework.extend(), rework.references(), reworkVariables(), rework.colors(), reworkMath(), reworkShade()];
+    reworkPlugins: [mixin(reworkMixins), reworkInherit(), reworkReferences(), reworkVariables(), reworkColors(), reworkMath(), reworkShade()],
     serverJadePaths: ['lib/express-pages/**/*.jade'],
     stylGlobals: [],
     stylPaths: ['lib/**/*.styl'],
@@ -49,6 +62,13 @@ function buildGulp() {
   stylGlobals.forEach(function(path) {
     stylDefinitions += read(path) + '\n';
   });
+
+  gulp.task('styles', function() {
+    return styles()
+      .pipe(surgeon.stitch(slurpee.config.cssFile))
+      .pipe(gulp.dest(slurpee.config.outputDir))
+      .pipe(livereload(lrServer));
+  });
 }
 
 
@@ -61,7 +81,7 @@ function styles() {
   var stylStream = gulp.src(stylPaths)
       .pipe(prepend(stylDefinitions))
       .pipe(cssWhitespace())
-      .pipe(build.rework())
+      .pipe(build.rework(slurpee.config.reworkPlugins))
       .on('error', errorCatch);
 
   var stream;
