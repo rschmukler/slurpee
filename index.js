@@ -16,7 +16,8 @@ var gulp = require('gulp'),
     livereload = require('gulp-livereload'),
     lrServer = require('tiny-lr')(),
     autoprefixer = require('gulp-autoprefixer'),
-    cssWhitespace = require('gulp-css-whitespace');
+    cssWhitespace = require('gulp-css-whitespace'),
+    sourceUrl = require('gulp-source-url');
 
 // Rework related requires
 var mixin = require('rework-plugin-mixin'),
@@ -40,6 +41,8 @@ var slurpee = module.exports = {
     autoprefixerConfig: 'last 2 versions',
     cssFile: 'app.css',
     jsFile: 'app.js',
+    jsPaths: ['lib/{components,pages}/**/index.js', 'lib/{components,pages}/**/*.js'],
+    jsRootPath: './lib',
     jadePaths: ['lib/components/**/*.jade', 'lib/pages/**/*.jade'],
     liveReloadPort: 35729,
     outputDir: 'public/',
@@ -66,6 +69,13 @@ function buildGulp() {
   gulp.task('styles', function() {
     return styles()
       .pipe(surgeon.stitch(slurpee.config.cssFile))
+      .pipe(gulp.dest(slurpee.config.outputDir))
+      .pipe(livereload(lrServer));
+  });
+
+  gulp.task('js', function() {
+    return scripts({js: [sourceUrl(slurpee.config.jsRootPath)]})
+      .pipe(surgeon.stitch(slurpee.config.jsFile))
       .pipe(gulp.dest(slurpee.config.outputDir))
       .pipe(livereload(lrServer));
   });
@@ -96,6 +106,31 @@ function styles() {
     stream = stylStream;
   }
   return stream.pipe(autoprefixer(autoPrefixerConfig));
+}
+
+function scripts(opts) {
+  opts = opts || {};
+
+  var useComponent = slurpee.config.useComponent,
+      outputDir = slurpee.config.outputDir;
+
+
+  var scripts = gulp.src(slurpee.config.jsPaths);
+
+  if(opts.js) {
+    opts.js.forEach(function(plugin) {
+      scripts = scripts.pipe(plugin);
+    });
+  }
+
+  if(useComponent) {
+    var componentScripts = gulp.src('component.json')
+        .pipe(component.scripts({name:'component', out: 'public/'}))
+        .on('error', errorCatch);
+    return series(componentScripts, scripts);
+  } else {
+    return scripts;
+  }
 }
 
 function errorCatch(err) {

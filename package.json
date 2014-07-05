@@ -44,6 +44,7 @@
     "rework-plugin-colors": "~1.0.3",
     "gulp-css-whitespace": "~0.1.1",
     "gulp-component": "~0.1.8",
-    "gulp-surgeon": "~0.1.1"
+    "gulp-surgeon": "~0.1.1",
+    "gulp-source-url": "~0.1.2"
   }
 }
