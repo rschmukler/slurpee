@@ -17,6 +17,7 @@ var gulp = require('gulp'),
     lrServer = require('tiny-lr')(),
     autoprefixer = require('gulp-autoprefixer'),
     cssWhitespace = require('gulp-css-whitespace'),
+    hatchling = require('hatchling'),
     sourceUrl = require('gulp-source-url');
 
 // Rework related requires
@@ -79,6 +80,16 @@ function buildGulp() {
       .pipe(gulp.dest(slurpee.config.outputDir))
       .pipe(livereload(lrServer));
   });
+
+  for(var name in slurpee.config.spawns) {
+    var config = slurpee.config.spawns[name];
+    var cmd = config.cmd;
+    delete config.cmd;
+    gulp.task(spawn, function() {
+      gutil.log('Launching ' + name + '...');
+      hatchling(cmd, config);
+    });
+  }
 }
 
 
