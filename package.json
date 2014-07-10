@@ -46,6 +46,7 @@
     "gulp-component": "~0.1.8",
     "gulp-surgeon": "~0.1.1",
     "gulp-source-url": "~0.1.2",
-    "hatchling": "~0.1.0"
+    "hatchling": "~0.1.0",
+    "gulp-jade": "~0.6.1"
   }
 }

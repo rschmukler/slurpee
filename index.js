@@ -18,6 +18,7 @@ var gulp = require('gulp'),
     autoprefixer = require('gulp-autoprefixer'),
     cssWhitespace = require('gulp-css-whitespace'),
     hatchling = require('hatchling'),
+    jade = require('gul-jade'),
     sourceUrl = require('gulp-source-url');
 
 // Rework related requires
@@ -81,11 +82,19 @@ function buildGulp() {
       .pipe(livereload(lrServer));
   });
 
+  gulp.task('jade', function(done) {
+    return gulp.src(slurpee.config.jadePaths)
+      .pipe(jade())
+      .on('error', errorCatch)
+      .pipe(gulp.dest('./public'));
+  });
+
+  // Spawns
   for(var name in slurpee.config.spawns) {
     var config = slurpee.config.spawns[name];
     var cmd = config.cmd;
     delete config.cmd;
-    gulp.task(spawn, function() {
+    gulp.task(name, function() {
       gutil.log('Launching ' + name + '...');
       hatchling(cmd, config);
     });
@@ -110,9 +119,9 @@ function styles() {
   if(useComponent) {
     var componentStream = gulp.src('./component.json')
       .pipe(component({name: 'component', out: dest, only: 'styles'}))
-      .on('error', errorCatch)
+      .on('error', errorCatch);
 
-    stream = series(componentStream, stylStream)
+    stream = series(componentStream, stylStream);
   } else {
     stream = stylStream;
   }
