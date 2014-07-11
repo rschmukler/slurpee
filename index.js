@@ -8,6 +8,7 @@ var gulp = require('gulp'),
     read = require('fs').readFileSync,
     gutil = require('gulp-util'),
     surgeon = require('gulp-surgeon'),
+    symlink = require('gulp-symlink'),
     component = require('gulp-component'),
     series = require('stream-series'),
     prepend = require('gulp-insert').prepend,
@@ -82,11 +83,31 @@ function buildGulp() {
       .pipe(livereload(lrServer));
   });
 
-  gulp.task('jade', function(done) {
+  gulp.task('jade', function() {
     return gulp.src(slurpee.config.jadePaths)
       .pipe(jade())
       .on('error', errorCatch)
       .pipe(gulp.dest('./public'));
+  });
+
+  gulp.task('assets', function() {
+    var assetPaths = slurpee.config.assetPaths,
+        outputDir = slurpee.config.outputDir;
+
+    var assetStream = gulp.src(assetPaths)
+        .pipe(symlink('./' + outputDir));
+
+    if(slurpee.config.useComponent) {
+      return series(assetStream,
+        gulp.src('component.json')
+          .pipe(component({name: 'component', out: outputDir, ignore: ['styles', 'scripts']}))
+          .on('error', errorCatch)
+      );
+    } else {
+      return assetStream;
+    }
+    return series(
+    );
   });
 
   // Spawns
