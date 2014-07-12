@@ -110,6 +110,8 @@ function buildGulp() {
     );
   });
 
+  gulp.task('build', ['js', 'styles', 'jade', 'assets']);
+
   // Spawns
   for(var name in slurpee.config.spawns) {
     var config = slurpee.config.spawns[name];
