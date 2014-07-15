@@ -2,6 +2,7 @@
 
 var build = require('./lib/build');
 
+var extname = require('path').extname;
 // Gulp plugins
 
 var read = require('fs').readFileSync,
@@ -14,11 +15,11 @@ var read = require('fs').readFileSync,
     wrap = require('gulp-insert').wrap,
     transform = require('gulp-insert').transform,
     livereload = require('gulp-livereload'),
-//    lrServer = require('tiny-lr')(),
+    rename = require('gulp-rename'),
     autoprefixer = require('gulp-autoprefixer'),
     cssWhitespace = require('gulp-css-whitespace'),
     hatchling = require('hatchling'),
-    jade = require('gul-jade'),
+    jade = require('gulp-jade'),
     sourceUrl = require('gulp-source-url');
 
 // Rework related requires
@@ -41,6 +42,7 @@ var slurpee = module.exports = {
     ],
     autoprefixerConfig: 'last 2 versions',
     cssFile: 'app.css',
+    indexFile: undefined,
     jsFile: 'app.js',
     jsPaths: ['lib/{components,pages}/**/index.js', 'lib/{components,pages}/**/*.js'],
     jsRootPath: './lib',
@@ -159,6 +161,23 @@ function buildGulp(gulp) {
       .pipe(livereload());
     });
     gulp.watch(slurpee.config.stylGlobals, ['styles']);
+
+    if(slurpee.config.indexFile) {
+      var indexFile = slurpee.config.indexFile;
+      gulp.watch(indexFile, function(event) {
+        var stream = gulp.src(eventPath);
+
+        if(extname(indexFile) == '.jade') { 
+          stream.pipe(jade())
+          .on('error', errorCatch);
+        }
+
+        stream
+        .pipe(rename('index.html'))
+        .pipe(gulp.dest(outputDir))
+        .pipe(livereload());
+      });
+    }
   });
 }
 
