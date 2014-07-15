@@ -2,6 +2,8 @@
 
 var build = require('./lib/build');
 
+var extname = require('path').extname;
+
 // Gulp plugins
 
 var read = require('fs').readFileSync,
@@ -63,23 +65,27 @@ var stylDefinitions = ''; // used for styl globals
 
 function buildGulp(gulp) {
   // Read global styl definitions
-  var stylGlobals = slurpee.config.stylGlobals;
-  stylGlobals.forEach(function(path) {
-    stylDefinitions += read(path) + '\n';
+
+  gulp.task('reloadStylDefinitions', function() {
+    stylDefinitions = '';
+    var stylGlobals = slurpee.config.stylGlobals;
+    stylGlobals.forEach(function(path) {
+      stylDefinitions += read(path) + '\n';
+    });
   });
 
-  gulp.task('styles', function() {
+  gulp.task('styles', ['reloadStylDefinitions'], function() {
     return styles()
       .pipe(surgeon.stitch(slurpee.config.cssFile))
       .pipe(gulp.dest(slurpee.config.outputDir))
-      .pipe(livereload());
+      .pipe(livereload({auto: false}));
   });
 
   gulp.task('js', function() {
     return scripts({js: [sourceUrl(slurpee.config.jsRootPath)]})
       .pipe(surgeon.stitch(slurpee.config.jsFile))
       .pipe(gulp.dest(slurpee.config.outputDir))
-      .pipe(livereload());
+      .pipe(livereload({auto: false}));
   });
 
   gulp.task('jade', function() {
@@ -92,17 +98,17 @@ function buildGulp(gulp) {
   gulp.task('indexFile', function() {
     var indexFile = slurpee.config.indexFile;
     if(indexFile) {
-      var stream = gulp.src(eventPath);
+      var stream = gulp.src(indexFile);
 
-      if(extension(indexFile) == 'jade') { 
+      if(extname(indexFile) == '.jade') { 
         stream.pipe(jade())
         .on('error', errorCatch);
       }
 
       stream
       .pipe(rename('index.html'))
-      .pipe(gulp.dest(outputDir))
-      .pipe(livereload());
+      .pipe(gulp.dest(slurpee.config.outputDir))
+      .pipe(livereload({auto: false}));
     }
   });
 
@@ -122,8 +128,6 @@ function buildGulp(gulp) {
     } else {
       return assetStream;
     }
-    return series(
-    );
   });
 
   gulp.task('build', ['js', 'styles', 'indexFile', 'jade', 'assets']);
@@ -152,7 +156,7 @@ function buildGulp(gulp) {
       .pipe(sourceUrl(slurpee.config.jsRootPath))
       .pipe(surgeon.slice(outputDir + outputJs))
       .pipe(gulp.dest(outputDir))
-      .pipe(livereload())
+      .pipe(livereload({auto: false}))
     });
 
     // Watch Jade files
@@ -161,8 +165,12 @@ function buildGulp(gulp) {
       .pipe(jade())
       .on('error', errorCatch)
       .pipe(gulp.dest(outputDir + getDirName(event.path)))
-      .pipe(livereload());
+      .pipe(livereload({auto: false}));
     });
+
+    if(slurpee.config.indexFile) {
+      gulp.watch(slurpee.config.indexFile, ['indexFile']);
+    }
 
     // Watch Styl Files
     gulp.watch(slurpee.config.stylPaths, function(event) {
@@ -174,67 +182,64 @@ function buildGulp(gulp) {
       .pipe(autoprefixer(slurpee.config.autoprefixerConfig))
       .pipe(surgeon.slice(outputDir + outputCss))
       .pipe(gulp.dest(outputDir))
-      .pipe(livereload());
+      .pipe(livereload({auto: false}));
     });
     gulp.watch(slurpee.config.stylGlobals, ['styles']);
-
-    if(slurpee.config.indexFile) {
-      gulp.watch(slurpee.config.indexfile, ['indexFile']);
-    }
   });
-}
 
+  function styles() {
+    var useComponent = slurpee.config.useComponent,
+        stylPaths = slurpee.config.stylPaths,
+        autoPrefixerConfig = slurpee.config.autoprefixerConfig,
+        dest = slurpee.config.outputDir;
 
-function styles() {
-  var useComponent = slurpee.config.useComponent,
-      stylPaths = slurpee.config.stylPaths,
-      autoPrefixerConfig = slurpee.config.autoprefixerConfig,
-      dest = slurpee.config.outputDir;
-
-  var stylStream = gulp.src(stylPaths)
-      .pipe(prepend(stylDefinitions))
-      .pipe(cssWhitespace())
-      .pipe(build.rework(slurpee.config.reworkPlugins))
-      .on('error', errorCatch);
-
-  var stream;
-
-  if(useComponent) {
-    var componentStream = gulp.src('./component.json')
-      .pipe(component({name: 'component', out: dest, only: 'styles'}))
-      .on('error', errorCatch);
-
-    stream = series(componentStream, stylStream);
-  } else {
-    stream = stylStream;
-  }
-  return stream.pipe(autoprefixer(autoPrefixerConfig));
-}
-
-function scripts(opts) {
-  opts = opts || {};
-
-  var useComponent = slurpee.config.useComponent,
-      outputDir = slurpee.config.outputDir;
-
-
-  var scripts = gulp.src(slurpee.config.jsPaths);
-
-  if(opts.js) {
-    opts.js.forEach(function(plugin) {
-      scripts = scripts.pipe(plugin);
-    });
-  }
-
-  if(useComponent) {
-    var componentScripts = gulp.src('component.json')
-        .pipe(component.scripts({name:'component', out: 'public/'}))
+    var stylStream = gulp.src(stylPaths)
+        .pipe(prepend(stylDefinitions))
+        .pipe(cssWhitespace())
+        .pipe(build.rework(slurpee.config.reworkPlugins))
         .on('error', errorCatch);
-    return series(componentScripts, scripts);
-  } else {
-    return scripts;
+
+    var stream;
+
+    if(useComponent) {
+      var componentStream = gulp.src('./component.json')
+        .pipe(component({name: 'component', out: dest, only: 'styles'}))
+        .on('error', errorCatch);
+
+      stream = series(componentStream, stylStream);
+    } else {
+      stream = stylStream;
+    }
+    return stream.pipe(autoprefixer(autoPrefixerConfig));
+  }
+
+  function scripts(opts) {
+    opts = opts || {};
+
+    var useComponent = slurpee.config.useComponent,
+        outputDir = slurpee.config.outputDir;
+
+
+    var scripts = gulp.src(slurpee.config.jsPaths);
+
+    if(opts.js) {
+      opts.js.forEach(function(plugin) {
+        scripts = scripts.pipe(plugin);
+      });
+    }
+
+    if(useComponent) {
+      var componentScripts = gulp.src('component.json')
+          .pipe(component.scripts({name:'component', out: 'public/'}))
+          .on('error', errorCatch);
+      return series(componentScripts, scripts);
+    } else {
+      return scripts;
+    }
   }
 }
+
+
 
 function errorCatch(err) {
   var chalk = gutil.colors,
