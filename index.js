@@ -128,13 +128,37 @@ function buildGulp(gulp) {
         outputJs = slurpee.config.jsFile,
         outputCss = slurpee.config.cssFile;
 
+    // Watch Javascript files
     gulp.watch(slurpee.config.jsPaths, function(event) {
       gulp.src(event.path)
-      .pipe(sourceUrl('./lib'))
+      .pipe(sourceUrl(slurpee.config.jsRootPath))
       .pipe(surgeon.slice(outputDir + outputJs))
       .pipe(gulp.dest(outputDir))
       .pipe(livereload())
     });
+
+    // Watch Jade files
+    gulp.watch(slurpee.config.jadePaths, function(event) {
+      gulp.src(event.path)
+      .pipe(jade())
+      .on('error', errorCatch)
+      .pipe(gulp.dest(outputDir + getDirName(event.path)))
+      .pipe(livereload());
+    });
+
+    // Watch Styl Files
+    gulp.watch(slurpee.config.stylPaths, function(event) {
+      gulp.src(event.path)
+      .pipe(prepend(stylDefinitions))
+      .pipe(cssWhitespace())
+      .pipe(build.rework())
+      .on('error', errorCatch)
+      .pipe(autoprefixer(slurpee.config.autoprefixerConfig))
+      .pipe(surgeon.slice(outputDir + outputCss))
+      .pipe(gulp.dest(outputDir))
+      .pipe(livereload());
+    });
+    gulp.watch(slurpee.config.stylGlobals, ['styles']);
   });
 }
 
@@ -195,4 +219,9 @@ function errorCatch(err) {
       log = gutil.log;
   var errorString = '[' + chalk.red(err.plugin) + '] ' + 'Error: ' + chalk.magenta(err.message);
   log(errorString);
+}
+
+function getDirName(path) {
+  path = path.split('/');
+  return path[path.length - 2];
 }
