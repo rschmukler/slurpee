@@ -4,8 +4,7 @@ var build = require('./lib/build');
 
 // Gulp plugins
 
-var gulp = require('gulp'),
-    read = require('fs').readFileSync,
+var read = require('fs').readFileSync,
     gutil = require('gulp-util'),
     surgeon = require('gulp-surgeon'),
     symlink = require('gulp-symlink'),
@@ -15,7 +14,7 @@ var gulp = require('gulp'),
     wrap = require('gulp-insert').wrap,
     transform = require('gulp-insert').transform,
     livereload = require('gulp-livereload'),
-    lrServer = require('tiny-lr')(),
+//    lrServer = require('tiny-lr')(),
     autoprefixer = require('gulp-autoprefixer'),
     cssWhitespace = require('gulp-css-whitespace'),
     hatchling = require('hatchling'),
@@ -33,7 +32,6 @@ var mixin = require('rework-plugin-mixin'),
     reworkMath = require('rework-math');
 
 var slurpee = module.exports = {
-  gulp: gulp,
   configure: buildGulp,
   config: {
     assetPaths: [
@@ -62,7 +60,7 @@ var slurpee = module.exports = {
 
 var stylDefinitions = ''; // used for styl globals
 
-function buildGulp() {
+function buildGulp(gulp) {
   // Read global styl definitions
   var stylGlobals = slurpee.config.stylGlobals;
   stylGlobals.forEach(function(path) {
@@ -73,14 +71,14 @@ function buildGulp() {
     return styles()
       .pipe(surgeon.stitch(slurpee.config.cssFile))
       .pipe(gulp.dest(slurpee.config.outputDir))
-      .pipe(livereload(lrServer));
+      .pipe(livereload());
   });
 
   gulp.task('js', function() {
     return scripts({js: [sourceUrl(slurpee.config.jsRootPath)]})
       .pipe(surgeon.stitch(slurpee.config.jsFile))
       .pipe(gulp.dest(slurpee.config.outputDir))
-      .pipe(livereload(lrServer));
+      .pipe(livereload());
   });
 
   gulp.task('jade', function() {
@@ -122,6 +120,22 @@ function buildGulp() {
       hatchling(cmd, config);
     });
   }
+
+  gulp.task('watch', function() {
+    livereload.listen(slurpee.config.liveReloadPort);
+
+    var outputDir = slurpee.config.outputDir,
+        outputJs = slurpee.config.jsFile,
+        outputCss = slurpee.config.cssFile;
+
+    gulp.watch(slurpee.config.jsPaths, function(event) {
+      gulp.src(event.path)
+      .pipe(sourceUrl('./lib'))
+      .pipe(surgeon.slice(outputDir + outputJs))
+      .pipe(gulp.dest(outputDir))
+      .pipe(livereload())
+    });
+  });
 }
 
 

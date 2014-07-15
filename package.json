@@ -23,8 +23,10 @@
     "expect.js": "~0.3.1",
     "mocha": "~1.20.1"
   },
+  "peerDependencies": {
+    "gulp": "~3.8.5"
+  },
   "dependencies": {
-    "gulp": "~3.8.5",
     "stream-series": "~0.1.0",
     "gulp-insert": "~0.4.0",
     "gulp-util": "~2.2.19",
