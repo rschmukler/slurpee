@@ -2,7 +2,6 @@
 
 var build = require('./lib/build');
 
-var extname = require('path').extname;
 // Gulp plugins
 
 var read = require('fs').readFileSync,
@@ -90,6 +89,23 @@ function buildGulp(gulp) {
       .pipe(gulp.dest('./public'));
   });
 
+  gulp.task('indexFile', function() {
+    var indexFile = slurpee.config.indexFile;
+    if(indexFile) {
+      var stream = gulp.src(eventPath);
+
+      if(extension(indexFile) == 'jade') { 
+        stream.pipe(jade())
+        .on('error', errorCatch);
+      }
+
+      stream
+      .pipe(rename('index.html'))
+      .pipe(gulp.dest(outputDir))
+      .pipe(livereload());
+    }
+  });
+
   gulp.task('assets', function() {
     var assetPaths = slurpee.config.assetPaths,
         outputDir = slurpee.config.outputDir;
@@ -110,7 +126,7 @@ function buildGulp(gulp) {
     );
   });
 
-  gulp.task('build', ['js', 'styles', 'jade', 'assets']);
+  gulp.task('build', ['js', 'styles', 'indexFile', 'jade', 'assets']);
 
   // Spawns
   for(var name in slurpee.config.spawns) {
@@ -163,20 +179,7 @@ function buildGulp(gulp) {
     gulp.watch(slurpee.config.stylGlobals, ['styles']);
 
     if(slurpee.config.indexFile) {
-      var indexFile = slurpee.config.indexFile;
-      gulp.watch(indexFile, function(event) {
-        var stream = gulp.src(eventPath);
-
-        if(extname(indexFile) == '.jade') { 
-          stream.pipe(jade())
-          .on('error', errorCatch);
-        }
-
-        stream
-        .pipe(rename('index.html'))
-        .pipe(gulp.dest(outputDir))
-        .pipe(livereload());
-      });
+      gulp.watch(slurpee.config.indexfile, ['indexFile']);
     }
   });
 }
