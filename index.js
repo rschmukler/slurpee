@@ -64,17 +64,19 @@ var slurpee = module.exports = {
 var stylDefinitions = ''; // used for styl globals
 
 function buildGulp(gulp) {
-  // Read global styl definitions
 
-  gulp.task('reloadStylDefinitions', function() {
+  function reloadStylDefinitions() {
     stylDefinitions = '';
     var stylGlobals = slurpee.config.stylGlobals;
     stylGlobals.forEach(function(path) {
       stylDefinitions += read(path) + '\n';
     });
-  });
+  }
 
-  gulp.task('styles', ['reloadStylDefinitions'], function() {
+  reloadStylDefinitions();
+
+  gulp.task('styles', function() {
+    reloadStylDefinitions();
     return styles()
       .pipe(surgeon.stitch(slurpee.config.cssFile))
       .pipe(gulp.dest(slurpee.config.outputDir))
@@ -177,7 +179,7 @@ function buildGulp(gulp) {
       gulp.src(event.path)
       .pipe(prepend(stylDefinitions))
       .pipe(cssWhitespace())
-      .pipe(build.rework())
+      .pipe(build.rework(slurpee.config.reworkPlugins))
       .on('error', errorCatch)
       .pipe(autoprefixer(slurpee.config.autoprefixerConfig))
       .pipe(surgeon.slice(outputDir + outputCss))
