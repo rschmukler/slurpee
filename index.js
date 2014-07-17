@@ -202,6 +202,7 @@ function buildGulp(gulp) {
 
   function styles() {
     var useComponent = slurpee.config.useComponent,
+        useBower = slurpee.config.useBower,
         stylPaths = slurpee.config.stylPaths,
         autoPrefixerConfig = slurpee.config.autoprefixerConfig,
         dest = slurpee.config.outputDir;
