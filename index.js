@@ -270,7 +270,7 @@ function buildGulp() {
 }
 
 
-function isChangedOrAdded(file) {
+function isAddedOrChanged(file) {
   return file.event == 'added' || file.event == 'changed';
 }
 
