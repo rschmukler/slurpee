@@ -171,7 +171,7 @@ function buildGulp() {
       .pipe(sourceUrl(slurpee.config.jsRootPath))
       .pipe(surgeon.slice(outputDir + outputJs))
       .pipe(gulp.dest(outputDir))
-      .pipe(livereload({auto: false}))
+      .pipe(livereload({auto: false}));
 
     // Watch Jade files
     watch({glob: slurpee.config.jadePaths, emitOnGlob: false})
@@ -186,12 +186,12 @@ function buildGulp() {
 
     // Watch Styl Files
     watch({glob: slurpee.config.stylPaths, emitOnGlob: false})
-      .pipe(prepend(stylDefinitions))
+      .pipe(prepend(function() { return stylDefinitions; }))
       .pipe(cssWhitespace())
       .pipe(build.rework(slurpee.config.reworkPlugins))
       .on('error', errorCatch)
       .pipe(autoprefixer(slurpee.config.autoprefixerConfig))
-      .on('error', errorCatch);
+      .on('error', errorCatch)
       .pipe(surgeon.slice(outputDir + outputCss))
       .pipe(gulp.dest(outputDir))
       .pipe(livereload({auto: false}));
@@ -222,7 +222,7 @@ function buildGulp() {
     } 
 
     if(useBower) {
-      var bowerStyles = gulp.src(bowerFiles()).pipe(filter('*.css'))
+      var bowerStyles = gulp.src(bowerFiles()).pipe(filter('*.css'));
       streams.unshift(bowerStyles);
     }
 
@@ -248,7 +248,7 @@ function buildGulp() {
       });
     }
 
-    streams.push(scripts)
+    streams.push(scripts);
 
     if(useComponent) {
       var componentScripts = gulp.src('component.json')
@@ -258,7 +258,7 @@ function buildGulp() {
     } 
 
     if(useBower) {
-      var bowerScripts = gulp.src(bowerFiles()).pipe(filter('*.js'))
+      var bowerScripts = gulp.src(bowerFiles()).pipe(filter('*.js'));
       streams.unshift(bowerScripts);
     }
 
