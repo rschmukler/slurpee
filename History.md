@@ -1,4 +1,11 @@
 
+0.1.3 / 2014-07-17 
+==================
+
+ * ignore delete file events
+ * make sure watching styles pays attention to global changes
+ * add error handling for auto-prefixer
+
 0.1.2 / 2014-07-16 
 ==================
 
