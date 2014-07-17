@@ -11,6 +11,7 @@ var read = require('fs').readFileSync,
     surgeon = require('gulp-surgeon'),
     symlink = require('gulp-symlink'),
     component = require('gulp-component'),
+    bowerFiles = require('main-bower-files'),
     series = require('stream-series'),
     prepend = require('gulp-insert').prepend,
     wrap = require('gulp-insert').wrap,
@@ -21,6 +22,7 @@ var read = require('fs').readFileSync,
     cssWhitespace = require('gulp-css-whitespace'),
     hatchling = require('hatchling'),
     jade = require('gulp-jade'),
+    filter = require('gulp-filter'),
     sourceUrl = require('gulp-source-url');
 
 // Rework related requires
@@ -54,7 +56,8 @@ var slurpee = module.exports = {
     serverJadePaths: ['lib/express-pages/**/*.jade'],
     stylGlobals: [],
     stylPaths: ['lib/**/*.styl'],
-    useComponent: true
+    useComponent: false,
+    useBower: false
   },
   spawns: {
   }
@@ -121,15 +124,23 @@ function buildGulp(gulp) {
     var assetStream = gulp.src(assetPaths)
         .pipe(symlink('./' + outputDir));
 
+    var streams = [assetStream];
+
     if(slurpee.config.useComponent) {
-      return series(assetStream,
+      streams.unshift(
         gulp.src('component.json')
-          .pipe(component({name: 'component', out: outputDir, ignore: ['styles', 'scripts']}))
-          .on('error', errorCatch)
+        .pipe(component({name: 'component', out: outputDir, ignore: ['styles', 'scripts']}))
+        .on('error', errorCatch)
       );
-    } else {
-      return assetStream;
     }
+
+    if(slurpee.config.useBower) {
+      streams.unshift(
+        gulp.src(bowerFiles()).pipe(filter(['!*.js', '!*.css']))
+      );
+    }
+
+    return series(streams);
   });
 
   gulp.task('build', ['js', 'styles', 'indexFile', 'jade', 'assets']);
@@ -201,27 +212,32 @@ function buildGulp(gulp) {
         .pipe(build.rework(slurpee.config.reworkPlugins))
         .on('error', errorCatch);
 
-    var stream;
+    var streams = [stylStream];
 
     if(useComponent) {
       var componentStream = gulp.src('./component.json')
         .pipe(component({name: 'component', out: dest, only: 'styles'}))
         .on('error', errorCatch);
+      streams.unshift(componentStream);
+    } 
 
-      stream = series(componentStream, stylStream);
-    } else {
-      stream = stylStream;
+    if(useBower) {
+      var bowerStyles = gulp.src(bowerFiles()).pipe(filter('*.css'))
+      streams.unshift(bowerStyles);
     }
-    return stream.pipe(autoprefixer(autoPrefixerConfig));
+
+    return series(streams).pipe(autoprefixer(autoPrefixerConfig));
   }
 
   function scripts(opts) {
     opts = opts || {};
 
     var useComponent = slurpee.config.useComponent,
+        useBower = slurpee.config.useBower,
         outputDir = slurpee.config.outputDir;
 
 
+    var streams = [];
     var scripts = gulp.src(slurpee.config.jsPaths);
 
     if(opts.js) {
@@ -230,14 +246,21 @@ function buildGulp(gulp) {
       });
     }
 
+    streams.push(scripts)
+
     if(useComponent) {
       var componentScripts = gulp.src('component.json')
           .pipe(component.scripts({name:'component', out: 'public/'}))
           .on('error', errorCatch);
-      return series(componentScripts, scripts);
-    } else {
-      return scripts;
+      streams.unshift(componentScripts);
+    } 
+
+    if(useBower) {
+      var bowerScripts = gulp.src(bowerFiles()).pipe(filter('*.js'))
+      streams.unshift(bowerScripts);
     }
+
+    return series(streams);
   }
 }
 
