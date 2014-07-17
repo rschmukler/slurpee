@@ -35,7 +35,7 @@
     "gulp-rework": "~0.3.0",
     "gulp-source-url": "~0.1.2",
     "gulp-surgeon": "~0.1.1",
-    "gulp-symlink": "~1.1.0",
+    "gulp-symlink": "~0.1.7",
     "gulp-util": "~2.2.19",
     "gulp-watch": "^0.6.8",
     "hatchling": "~0.1.0",
