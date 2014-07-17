@@ -168,6 +168,7 @@ function buildGulp() {
 
     // Watch Javascript files
     watch({glob: slurpee.config.jsPaths, emitOnGlob: false})
+      .pipe(filter(isAddedOrChanged))
       .pipe(sourceUrl(slurpee.config.jsRootPath))
       .pipe(surgeon.slice(outputDir + outputJs))
       .pipe(gulp.dest(outputDir))
@@ -175,6 +176,7 @@ function buildGulp() {
 
     // Watch Jade files
     watch({glob: slurpee.config.jadePaths, emitOnGlob: false})
+      .pipe(filter(isAddedOrChanged))
       .pipe(jade())
       .on('error', errorCatch)
       .pipe(gulp.dest(outputDir))
@@ -186,6 +188,7 @@ function buildGulp() {
 
     // Watch Styl Files
     watch({glob: slurpee.config.stylPaths, emitOnGlob: false})
+      .pipe(filter(isAddedOrChanged))
       .pipe(prepend(function() { return stylDefinitions; }))
       .pipe(cssWhitespace())
       .pipe(build.rework(slurpee.config.reworkPlugins))
@@ -267,6 +270,9 @@ function buildGulp() {
 }
 
 
+function isChangedOrAdded(file) {
+  return file.event == 'added' || file.event == 'changed';
+}
 
 function errorCatch(err) {
   var chalk = gutil.colors,
