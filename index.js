@@ -4,6 +4,8 @@ var build = require('./lib/build');
 
 var extname = require('path').extname;
 
+var gulp = require('gulp');
+
 // Gulp plugins
 
 var read = require('fs').readFileSync,
@@ -23,6 +25,7 @@ var read = require('fs').readFileSync,
     hatchling = require('hatchling'),
     jade = require('gulp-jade'),
     filter = require('gulp-filter'),
+    watch = require('gulp-watch'),
     sourceUrl = require('gulp-source-url');
 
 // Rework related requires
@@ -66,7 +69,7 @@ var slurpee = module.exports = {
 
 var stylDefinitions = ''; // used for styl globals
 
-function buildGulp(gulp) {
+function buildGulp() {
 
   function reloadStylDefinitions() {
     stylDefinitions = '';
@@ -164,30 +167,25 @@ function buildGulp(gulp) {
         outputCss = slurpee.config.cssFile;
 
     // Watch Javascript files
-    gulp.watch(slurpee.config.jsPaths, function(event) {
-      gulp.src(event.path)
+    watch({glob: slurpee.config.jsPaths})
       .pipe(sourceUrl(slurpee.config.jsRootPath))
       .pipe(surgeon.slice(outputDir + outputJs))
       .pipe(gulp.dest(outputDir))
       .pipe(livereload({auto: false}))
-    });
 
     // Watch Jade files
-    gulp.watch(slurpee.config.jadePaths, function(event) {
-      gulp.src(event.path)
+    watch({glob: slurpee.config.jadePaths})
       .pipe(jade())
       .on('error', errorCatch)
-      .pipe(gulp.dest(outputDir + getDirName(event.path)))
+      .pipe(gulp.dest(outputDir))
       .pipe(livereload({auto: false}));
-    });
 
     if(slurpee.config.indexFile) {
-      gulp.watch(slurpee.config.indexFile, ['indexFile']);
+      watch({glob: slurpee.config.indexFile}, ['indexFile']);
     }
 
     // Watch Styl Files
-    gulp.watch(slurpee.config.stylPaths, function(event) {
-      gulp.src(event.path)
+    watch({glob: slurpee.config.stylPaths})
       .pipe(prepend(stylDefinitions))
       .pipe(cssWhitespace())
       .pipe(build.rework(slurpee.config.reworkPlugins))
@@ -196,8 +194,8 @@ function buildGulp(gulp) {
       .pipe(surgeon.slice(outputDir + outputCss))
       .pipe(gulp.dest(outputDir))
       .pipe(livereload({auto: false}));
-    });
-    gulp.watch(slurpee.config.stylGlobals, ['styles']);
+
+    watch({ glob: slurpee.config.stylGlobals }, ['styles']);
   });
 
   function styles() {

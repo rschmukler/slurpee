@@ -23,9 +23,6 @@
     "expect.js": "~0.3.1",
     "mocha": "~1.20.1"
   },
-  "peerDependencies": {
-    "gulp": "~3.8.5"
-  },
   "dependencies": {
     "gulp-autoprefixer": "0.0.8",
     "gulp-component": "~0.1.8",
@@ -40,6 +37,7 @@
     "gulp-surgeon": "~0.1.1",
     "gulp-symlink": "~1.1.0",
     "gulp-util": "~2.2.19",
+    "gulp-watch": "^0.6.8",
     "hatchling": "~0.1.0",
     "main-bower-files": "^1.0.1",
     "rework": "~1.0.0",
