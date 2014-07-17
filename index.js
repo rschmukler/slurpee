@@ -191,6 +191,7 @@ function buildGulp() {
       .pipe(build.rework(slurpee.config.reworkPlugins))
       .on('error', errorCatch)
       .pipe(autoprefixer(slurpee.config.autoprefixerConfig))
+      .on('error', errorCatch);
       .pipe(surgeon.slice(outputDir + outputCss))
       .pipe(gulp.dest(outputDir))
       .pipe(livereload({auto: false}));
@@ -225,7 +226,9 @@ function buildGulp() {
       streams.unshift(bowerStyles);
     }
 
-    return series(streams).pipe(autoprefixer(autoPrefixerConfig));
+    return series(streams)
+    .pipe(autoprefixer(autoPrefixerConfig))
+    .on('error', errorCatch);
   }
 
   function scripts(opts) {
