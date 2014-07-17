@@ -167,25 +167,25 @@ function buildGulp() {
         outputCss = slurpee.config.cssFile;
 
     // Watch Javascript files
-    watch({glob: slurpee.config.jsPaths})
+    watch({glob: slurpee.config.jsPaths, emitOnGlob: false})
       .pipe(sourceUrl(slurpee.config.jsRootPath))
       .pipe(surgeon.slice(outputDir + outputJs))
       .pipe(gulp.dest(outputDir))
       .pipe(livereload({auto: false}))
 
     // Watch Jade files
-    watch({glob: slurpee.config.jadePaths})
+    watch({glob: slurpee.config.jadePaths, emitOnGlob: false})
       .pipe(jade())
       .on('error', errorCatch)
       .pipe(gulp.dest(outputDir))
       .pipe(livereload({auto: false}));
 
     if(slurpee.config.indexFile) {
-      watch({glob: slurpee.config.indexFile}, ['indexFile']);
+      watch({glob: slurpee.config.indexFile, emitOnGlob: false}, ['indexFile']);
     }
 
     // Watch Styl Files
-    watch({glob: slurpee.config.stylPaths})
+    watch({glob: slurpee.config.stylPaths, emitOnGlob: false})
       .pipe(prepend(stylDefinitions))
       .pipe(cssWhitespace())
       .pipe(build.rework(slurpee.config.reworkPlugins))
@@ -195,7 +195,7 @@ function buildGulp() {
       .pipe(gulp.dest(outputDir))
       .pipe(livereload({auto: false}));
 
-    watch({ glob: slurpee.config.stylGlobals }, ['styles']);
+    watch({ glob: slurpee.config.stylGlobals, emitOnGlob: false }, ['styles']);
   });
 
   function styles() {
