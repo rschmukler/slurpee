@@ -11,6 +11,7 @@ var gulp = require('gulp');
 var read = require('fs').readFileSync,
     gutil = require('gulp-util'),
     surgeon = require('gulp-surgeon'),
+    plumber = require('gulp-plumber'),
     symlink = require('gulp-symlink'),
     component = require('gulp-component'),
     bowerFiles = require('main-bower-files'),
@@ -99,7 +100,7 @@ function buildGulp() {
   gulp.task('jade', function() {
     return gulp.src(slurpee.config.jadePaths)
       .pipe(jade())
-      .on('error', errorCatch)
+      .pipe(plumber())
       .pipe(gulp.dest('./public'));
   });
 
@@ -108,9 +109,9 @@ function buildGulp() {
     if(indexFile) {
       var stream = gulp.src(indexFile);
 
-      if(extname(indexFile) == '.jade') { 
+      if(extname(indexFile) == '.jade') {
         stream.pipe(jade())
-        .on('error', errorCatch);
+        .pipe(plumber());
       }
 
       stream
@@ -133,7 +134,7 @@ function buildGulp() {
       streams.unshift(
         gulp.src('component.json')
         .pipe(component({name: 'component', out: outputDir, ignore: ['styles', 'scripts']}))
-        .on('error', errorCatch)
+        .pipe(plumber())
       );
     }
 
@@ -178,7 +179,7 @@ function buildGulp() {
     watch({glob: slurpee.config.jadePaths, emitOnGlob: false})
       .pipe(filter(isAddedOrChanged))
       .pipe(jade())
-      .on('error', errorCatch)
+      .pipe(plumber())
       .pipe(gulp.dest(outputDir))
       .pipe(livereload({auto: false}));
 
@@ -192,9 +193,9 @@ function buildGulp() {
       .pipe(prepend(function() { return stylDefinitions; }))
       .pipe(cssWhitespace())
       .pipe(build.rework(slurpee.config.reworkPlugins))
-      .on('error', errorCatch)
+      .pipe(plumber())
       .pipe(autoprefixer(slurpee.config.autoprefixerConfig))
-      .on('error', errorCatch)
+      .pipe(plumber())
       .pipe(surgeon.slice(outputDir + outputCss))
       .pipe(gulp.dest(outputDir))
       .pipe(livereload({auto: false}));
@@ -213,16 +214,16 @@ function buildGulp() {
         .pipe(prepend(stylDefinitions))
         .pipe(cssWhitespace())
         .pipe(build.rework(slurpee.config.reworkPlugins))
-        .on('error', errorCatch);
+        .pipe(plumber());
 
     var streams = [stylStream];
 
     if(useComponent) {
       var componentStream = gulp.src('./component.json')
         .pipe(component({name: 'component', out: dest, only: 'styles'}))
-        .on('error', errorCatch);
+        .pipe(plumber());
       streams.unshift(componentStream);
-    } 
+    }
 
     if(useBower) {
       var bowerStyles = gulp.src(bowerFiles()).pipe(filter('*.css'));
@@ -231,7 +232,7 @@ function buildGulp() {
 
     return series(streams)
     .pipe(autoprefixer(autoPrefixerConfig))
-    .on('error', errorCatch);
+    .pipe(plumber());
   }
 
   function scripts(opts) {
@@ -255,10 +256,9 @@ function buildGulp() {
 
     if(useComponent) {
       var componentScripts = gulp.src('component.json')
-          .pipe(component.scripts({name:'component', out: 'public/'}))
-          .on('error', errorCatch);
+          .pipe(component.scripts({name:'component', out: 'public/'}));
       streams.unshift(componentScripts);
-    } 
+    }
 
     if(useBower) {
       var bowerScripts = gulp.src(bowerFiles()).pipe(filter('*.js'));
@@ -272,13 +272,6 @@ function buildGulp() {
 
 function isAddedOrChanged(file) {
   return file.event == 'added' || file.event == 'changed';
-}
-
-function errorCatch(err) {
-  var chalk = gutil.colors,
-      log = gutil.log;
-  var errorString = '[' + chalk.red(err.plugin) + '] ' + 'Error: ' + chalk.magenta(err.message);
-  log(errorString);
 }
 
 function getDirName(path) {
