@@ -99,8 +99,8 @@ function buildGulp() {
 
   gulp.task('jade', function() {
     return gulp.src(slurpee.config.jadePaths)
-      .pipe(jade())
       .pipe(plumber())
+      .pipe(jade())
       .pipe(gulp.dest('./public'));
   });
 
@@ -110,8 +110,9 @@ function buildGulp() {
       var stream = gulp.src(indexFile);
 
       if(extname(indexFile) == '.jade') {
-        stream.pipe(jade())
-        .pipe(plumber());
+        stream
+        .pipe(plumber())
+        .pipe(jade());
       }
 
       stream
@@ -133,8 +134,8 @@ function buildGulp() {
     if(slurpee.config.useComponent) {
       streams.unshift(
         gulp.src('component.json')
-        .pipe(component({name: 'component', out: outputDir, ignore: ['styles', 'scripts']}))
         .pipe(plumber())
+        .pipe(component({name: 'component', out: outputDir, ignore: ['styles', 'scripts']}))
       );
     }
 
@@ -178,8 +179,8 @@ function buildGulp() {
     // Watch Jade files
     watch({glob: slurpee.config.jadePaths, emitOnGlob: false})
       .pipe(filter(isAddedOrChanged))
-      .pipe(jade())
       .pipe(plumber())
+      .pipe(jade())
       .pipe(gulp.dest(outputDir))
       .pipe(livereload({auto: false}));
 
@@ -192,10 +193,9 @@ function buildGulp() {
       .pipe(filter(isAddedOrChanged))
       .pipe(prepend(function() { return stylDefinitions; }))
       .pipe(cssWhitespace())
+      .pipe(plumber())
       .pipe(build.rework(slurpee.config.reworkPlugins))
-      .pipe(plumber())
       .pipe(autoprefixer(slurpee.config.autoprefixerConfig))
-      .pipe(plumber())
       .pipe(surgeon.slice(outputDir + outputCss))
       .pipe(gulp.dest(outputDir))
       .pipe(livereload({auto: false}));
@@ -213,8 +213,8 @@ function buildGulp() {
     var stylStream = gulp.src(stylPaths)
         .pipe(prepend(stylDefinitions))
         .pipe(cssWhitespace())
-        .pipe(build.rework(slurpee.config.reworkPlugins))
-        .pipe(plumber());
+        .pipe(plumber())
+        .pipe(build.rework(slurpee.config.reworkPlugins));
 
     var streams = [stylStream];
 
