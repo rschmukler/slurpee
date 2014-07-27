@@ -21,3 +21,36 @@ Slurpee is a configuration of gulp that enables you to quickly get up and runnin
 - `assets` - moves files and images from `lib` to `public/`
 - `build` - runs `['js', 'styles', 'jade' 'indexFile', 'jade', 'assets']`
 - `watch` - watches files for changes and livereloads them.
+
+## Configuring / Default Values
+
+The default config looks like this.
+
+```js
+  assetPaths: [
+    'lib/components/**/{images,files}/*',
+    'lib/pages/**/{images,files}/*',
+    'lib/express-pages/**/{images,files}/*'
+  ],
+  autoprefixerConfig: 'last 2 versions',
+  cssFile: 'app.css',
+  indexFile: undefined,
+  jsFile: 'app.js',
+  jsPaths: ['lib/{components,pages}/**/index.js', 'lib/{components,pages}/**/*.js'],
+  jsRootPath: './lib',
+  jadePaths: ['lib/components/**/*.jade', 'lib/pages/**/*.jade'],
+  liveReloadPort: 35729,
+  outputDir: 'public/',
+  reworkPlugins: [mixin(reworkMixins), reworkInherit(), reworkReferences(), reworkVariables(), reworkColors(), reworkMath(), reworkShade()],
+  serverJadePaths: ['lib/express-pages/**/*.jade'],
+  stylGlobals: [],
+  stylPaths: ['lib/**/*.styl'],
+  useComponent: false,
+  useBower: false
+},
+spawns: {
+}
+```
+
+This is based off of the [sik](http://github.com/rschmukler/sik) suggested
+project layout. 

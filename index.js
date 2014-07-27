@@ -61,10 +61,10 @@ var slurpee = module.exports = {
     stylGlobals: [],
     stylPaths: ['lib/**/*.styl'],
     useComponent: false,
-    useBower: false
+    useBower: false,
+    spawns: {
+    }
   },
-  spawns: {
-  }
 };
 
 
