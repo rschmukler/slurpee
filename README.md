@@ -43,12 +43,12 @@ The default config looks like this.
   outputDir: 'public/',
   reworkPlugins: [mixin(reworkMixins), reworkInherit(), reworkReferences(), reworkVariables(), reworkColors(), reworkMath(), reworkShade()],
   serverJadePaths: ['lib/express-pages/**/*.jade'],
+  spawns: {
+  },
   stylGlobals: [],
   stylPaths: ['lib/**/*.styl'],
   useComponent: false,
   useBower: false
-},
-spawns: {
 }
 ```
 
