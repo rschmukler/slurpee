@@ -11,7 +11,7 @@ var gulp = require('gulp');
 var read = require('fs').readFileSync,
     gutil = require('gulp-util'),
     surgeon = require('gulp-surgeon'),
-    connect = require('gulp-connect'),
+    webserver = require('gulp-webserver'),
     plumber = require('gulp-plumber'),
     symlink = require('gulp-symlink'),
     component = require('gulp-component'),
@@ -133,11 +133,11 @@ function buildGulp() {
       throw new gutil.PluginError('slurpee', 'invalid static configuration');
     }
 
-    connect.server({
-      root: staticPath,
-      port: staticPort
-    });
-
+    gulp.src(staticPath)
+    .pipe(webserver({
+      port: staticPort,
+      fallback: 'index.html'
+    }));
   });
 
   gulp.task('assets', function() {
