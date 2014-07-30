@@ -11,6 +11,7 @@ var gulp = require('gulp');
 var read = require('fs').readFileSync,
     gutil = require('gulp-util'),
     surgeon = require('gulp-surgeon'),
+    connect = require('gulp-connect'),
     plumber = require('gulp-plumber'),
     symlink = require('gulp-symlink'),
     component = require('gulp-component'),
@@ -63,7 +64,9 @@ var slurpee = module.exports = {
     useComponent: false,
     useBower: false,
     spawns: {
-    }
+    },
+    staticDir: undefined,
+    staticPort: 3000
   },
 };
 
@@ -120,6 +123,21 @@ function buildGulp() {
       .pipe(gulp.dest(slurpee.config.outputDir))
       .pipe(livereload({auto: false}));
     }
+  });
+
+  gulp.task('serve', function() {
+    var staticPath = slurpee.config.staticDir,
+        staticPort = slurpee.config.staticPort;
+
+    if(!(staticPath && staticPort)) {
+      throw new gutil.PluginError('slurpee', 'invalid static configuration');
+    }
+
+    connect.server({
+      root: staticPath,
+      port: staticPort
+    });
+
   });
 
   gulp.task('assets', function() {

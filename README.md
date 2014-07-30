@@ -19,6 +19,7 @@ Slurpee is a configuration of gulp that enables you to quickly get up and runnin
 - `indexFile` - compiles an `indexFile` (if configured) and moves it to
   `public/index.html`
 - `assets` - moves files and images from `lib` to `public/`
+- `serve` - start a static file server
 - `build` - runs `['js', 'styles', 'jade' 'indexFile', 'jade', 'assets']`
 - `watch` - watches files for changes and livereloads them.
 
@@ -45,6 +46,8 @@ The default config looks like this.
   serverJadePaths: ['lib/express-pages/**/*.jade'],
   spawns: {
   },
+  staticPath: undefined,
+  staticPort: 3000,
   stylGlobals: [],
   stylPaths: ['lib/**/*.styl'],
   useComponent: false,

@@ -26,11 +26,13 @@
   "dependencies": {
     "gulp-autoprefixer": "0.0.8",
     "gulp-component": "~0.1.8",
+    "gulp-connect": "^2.0.6",
     "gulp-css-whitespace": "~0.1.1",
     "gulp-filter": "^0.5.0",
     "gulp-insert": "~0.4.0",
     "gulp-jade": "~0.6.1",
     "gulp-livereload": "~2.1.0",
+    "gulp-plumber": "~0.6.3",
     "gulp-rename": "~1.2.0",
     "gulp-rework": "~0.3.0",
     "gulp-source-url": "~0.1.2",
@@ -51,7 +53,6 @@
     "rework-shade": "~1.4.3",
     "rework-variant": "~0.2.2",
     "stream-series": "~0.1.1",
-    "tiny-lr": "0.0.8",
-    "gulp-plumber": "~0.6.3"
+    "tiny-lr": "0.0.8"
   }
 }
