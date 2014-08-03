@@ -25,7 +25,9 @@ Slurpee is a configuration of gulp that enables you to quickly get up and runnin
 
 ## Configuring / Default Values
 
-The default config looks like this.
+The default config for this project is based off of the [sik](http://github.com/rschmukler/sik) suggested
+project layout. 
+
 
 ```js
   assetPaths: [
@@ -54,6 +56,3 @@ The default config looks like this.
   useBower: false
 }
 ```
-
-This is based off of the [sik](http://github.com/rschmukler/sik) suggested
-project layout. 
