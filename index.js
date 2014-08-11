@@ -2,7 +2,8 @@
 
 var build = require('./lib/build');
 
-var extname = require('path').extname;
+var extname = require('path').extname,
+    exec = require('child_process').exec;
 
 var gulp = require('gulp');
 
@@ -179,12 +180,25 @@ function buildGulp() {
     });
   }
 
+  gulp.task('watch-gulpfile', function() {
+    // Watch Gulpfile for changes
+    gulp.watch('gulpfile.js', spawnChild);
+    var child;
+    spawnChild();
+    function spawnChild(e) {
+      if(child) child.kill();
+      if(e) gutil.log('Gulpfile changed, reloading gulp');
+      child = hatchling('gulp', ['watch'], { stdio: 'inherit' });
+    }
+  });
+
   gulp.task('watch', function() {
     livereload.listen(slurpee.config.liveReloadPort);
 
     var outputDir = slurpee.config.outputDir,
         outputJs = slurpee.config.jsFile,
         outputCss = slurpee.config.cssFile;
+
 
     // Watch Javascript files
     watch({glob: slurpee.config.jsPaths, emitOnGlob: false})
