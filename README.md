@@ -22,6 +22,8 @@ Slurpee is a configuration of gulp that enables you to quickly get up and runnin
 - `serve` - start a static file server
 - `build` - runs `['js', 'styles', 'jade' 'indexFile', 'jade', 'assets']`
 - `watch` - watches files for changes and livereloads them.
+- `watch-gulpfile` - watches gulpfile for changes and reloads the `watch` task
+  on change.
 
 ## Configuring / Default Values
 
