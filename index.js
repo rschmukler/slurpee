@@ -107,7 +107,7 @@ function buildGulp() {
     return gulp.src(slurpee.config.jadePaths)
       .pipe(plumber())
       .pipe(jade())
-      .pipe(gulp.dest('./public/' + slurpee.config.templateDir));
+      .pipe(gulp.dest('./public/' + (slurpee.config.templateDir || '')));
   });
 
   gulp.task('indexFile', function() {
@@ -203,7 +203,7 @@ function buildGulp() {
     var outputDir = slurpee.config.outputDir,
         outputJs = slurpee.config.jsFile,
         outputCss = slurpee.config.cssFile,
-        templateDir = slurpee.config.templateDir,
+        templateDir = slurpee.config.templateDir || '',
         cssDir = slurpee.config.cssFile.split(pathSep).length > 1 ? slurpee.config.cssFile.split(pathSep).slice(0, -1) : '',
         jsDir = slurpee.config.jsFile.split(pathSep).length > 1 ? slurpee.config.jsFile.split(pathSep).slice(0, -1) : '';
 
