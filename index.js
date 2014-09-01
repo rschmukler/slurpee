@@ -209,7 +209,7 @@ function buildGulp() {
       .pipe(filter(isAddedOrChanged))
       .pipe(sourceUrl(slurpee.config.jsRootPath))
       .pipe(surgeon.slice(outputDir + outputJs))
-      .pipe(gulp.dest(outputDir))
+      .pipe(gulp.dest(outputDir + outputJs))
       .pipe(livereload({auto: false}));
 
     // Watch Jade files
@@ -233,7 +233,7 @@ function buildGulp() {
       .pipe(build.rework(slurpee.config.reworkPlugins))
       .pipe(autoprefixer(slurpee.config.autoprefixerConfig))
       .pipe(surgeon.slice(outputDir + outputCss))
-      .pipe(gulp.dest(outputDir))
+      .pipe(gulp.dest(outputDir + outputCss))
       .pipe(livereload({auto: false}));
 
     watch({ glob: slurpee.config.stylGlobals, emitOnGlob: false }, ['styles']);
