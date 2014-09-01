@@ -160,7 +160,7 @@ function buildGulp() {
 
     if(slurpee.config.useBower) {
       streams.unshift(
-        gulp.src(bowerFiles()).pipe(filter(['!*.js', '!*.css']))
+        gulp.src(bowerFiles()).pipe(filter(['*', '!*.js', '!*.css']))
           .pipe(symlink('./' + outputDir))
       );
     }
