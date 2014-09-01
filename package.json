@@ -53,6 +53,7 @@
     "rework-shade": "~1.4.3",
     "rework-variant": "~0.2.2",
     "stream-series": "~0.1.1",
-    "tiny-lr": "0.0.8"
+    "tiny-lr": "0.0.8",
+    "gulp-rebase": "~0.1.0"
   }
 }

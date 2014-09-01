@@ -29,7 +29,8 @@ var read = require('fs').readFileSync,
     jade = require('gulp-jade'),
     filter = require('gulp-filter'),
     watch = require('gulp-watch'),
-    sourceUrl = require('gulp-source-url');
+    sourceUrl = require('gulp-source-url'),
+    rebase = require('gulp-rebase');
 
 // Rework related requires
 var mixin = require('rework-plugin-mixin'),
@@ -159,8 +160,10 @@ function buildGulp() {
     }
 
     if(slurpee.config.useBower) {
+      var dirLength = process.cwd().split(require('path').sep).length + 2;
       streams.unshift(
         gulp.src(bowerFiles()).pipe(filter(['*', '!*.js', '!*.css']))
+          .pipe(rebase('^' + dirLength))
           .pipe(symlink('./' + outputDir))
       );
     }
