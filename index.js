@@ -3,7 +3,8 @@
 var build = require('./lib/build');
 
 var extname = require('path').extname,
-    exec = require('child_process').exec;
+    exec = require('child_process').exec,
+    pathSep = require('path').sep;
 
 var gulp = require('gulp');
 
@@ -106,7 +107,7 @@ function buildGulp() {
     return gulp.src(slurpee.config.jadePaths)
       .pipe(plumber())
       .pipe(jade())
-      .pipe(gulp.dest('./public'));
+      .pipe(gulp.dest('./public/' + slurpee.config.templateDir));
   });
 
   gulp.task('indexFile', function() {
@@ -160,7 +161,7 @@ function buildGulp() {
     }
 
     if(slurpee.config.useBower) {
-      var dirLength = process.cwd().split(require('path').sep).length + 2;
+      var dirLength = process.cwd().split(pathSep).length + 2;
       streams.unshift(
         gulp.src(bowerFiles()).pipe(filter(['*', '!*.js', '!*.css']))
           .pipe(rebase('^' + dirLength))
@@ -201,7 +202,10 @@ function buildGulp() {
 
     var outputDir = slurpee.config.outputDir,
         outputJs = slurpee.config.jsFile,
-        outputCss = slurpee.config.cssFile;
+        outputCss = slurpee.config.cssFile,
+        templateDir = slurpee.config.templateDir,
+        cssDir = slurpee.config.cssFile.split(pathSep).length > 1 ? slurpee.config.cssFile.split(pathSep).slice(0, -1) : '',
+        jsDir = slurpee.config.jsFile.split(pathSep).length > 1 ? slurpee.config.jsFile.split(pathSep).slice(0, -1) : '';
 
 
     // Watch Javascript files
@@ -209,7 +213,7 @@ function buildGulp() {
       .pipe(filter(isAddedOrChanged))
       .pipe(sourceUrl(slurpee.config.jsRootPath))
       .pipe(surgeon.slice(outputDir + outputJs))
-      .pipe(gulp.dest(outputDir + outputJs))
+      .pipe(gulp.dest(outputDir + pathSep + jsDir))
       .pipe(livereload({auto: false}));
 
     // Watch Jade files
@@ -217,7 +221,7 @@ function buildGulp() {
       .pipe(filter(isAddedOrChanged))
       .pipe(plumber())
       .pipe(jade())
-      .pipe(gulp.dest(outputDir))
+      .pipe(gulp.dest(outputDir + pathSep + templateDir))
       .pipe(livereload({auto: false}));
 
     if(slurpee.config.indexFile) {
@@ -233,7 +237,7 @@ function buildGulp() {
       .pipe(build.rework(slurpee.config.reworkPlugins))
       .pipe(autoprefixer(slurpee.config.autoprefixerConfig))
       .pipe(surgeon.slice(outputDir + outputCss))
-      .pipe(gulp.dest(outputDir + outputCss))
+      .pipe(gulp.dest(outputDir + pathSep + cssDir))
       .pipe(livereload({auto: false}));
 
     watch({ glob: slurpee.config.stylGlobals, emitOnGlob: false }, ['styles']);
