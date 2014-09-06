@@ -162,8 +162,8 @@ function buildGulp() {
 
     if(slurpee.config.useBower) {
       var dirLength = process.cwd().split(pathSep).length + 2;
-      var files;
-      if(files = bowerFiles() && files.length) {
+      var files = bowerFiles();
+      if(files.length) {
         streams.unshift(
           gulp.src(files).pipe(filter(['*', '!*.js', '!*.css']))
             .pipe(rebase('^' + dirLength))
@@ -271,7 +271,7 @@ function buildGulp() {
     if(useBower) {
       var files = bowerFiles();
       if(files.length) {
-        var bowerStyles = gulp.src(bowerFiles()).pipe(filter('*.css'));
+        var bowerStyles = gulp.src(files).pipe(filter('*.css'));
         streams.unshift(bowerStyles);
       }
     }
@@ -309,7 +309,7 @@ function buildGulp() {
     if(useBower) {
       var files = bowerFiles();
       if(files.length) {
-        var bowerScripts = gulp.src(bowerFiles()).pipe(filter('*.js'));
+        var bowerScripts = gulp.src(files).pipe(filter('*.js'));
         streams.unshift(bowerScripts);
       }
     }
