@@ -107,7 +107,7 @@ function buildGulp() {
     return gulp.src(slurpee.config.jadePaths)
       .pipe(plumber())
       .pipe(jade())
-      .pipe(gulp.dest('./public/' + (slurpee.config.templateDir || '')));
+      .pipe(gulp.dest('./' + slurpee.config.outputDir + (slurpee.config.templateDir || '')));
   });
 
   gulp.task('indexFile', function() {
@@ -296,7 +296,7 @@ function buildGulp() {
 
     if(useComponent) {
       var componentScripts = gulp.src('component.json')
-          .pipe(component.scripts({name:'component', out: 'public/'}));
+          .pipe(component.scripts({name:'component', out: slurpee.config.outputDir}));
       streams.unshift(componentScripts);
     }
 
