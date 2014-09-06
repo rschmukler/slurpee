@@ -162,11 +162,14 @@ function buildGulp() {
 
     if(slurpee.config.useBower) {
       var dirLength = process.cwd().split(pathSep).length + 2;
-      streams.unshift(
-        gulp.src(bowerFiles()).pipe(filter(['*', '!*.js', '!*.css']))
-          .pipe(rebase('^' + dirLength))
-          .pipe(symlink('./' + outputDir))
-      );
+      var files;
+      if(files = bowerFiles() && files.length) {
+        streams.unshift(
+          gulp.src(files).pipe(filter(['*', '!*.js', '!*.css']))
+            .pipe(rebase('^' + dirLength))
+            .pipe(symlink('./' + outputDir))
+        );
+      }
     }
 
     return series(streams);
@@ -266,8 +269,11 @@ function buildGulp() {
     }
 
     if(useBower) {
-      var bowerStyles = gulp.src(bowerFiles()).pipe(filter('*.css'));
-      streams.unshift(bowerStyles);
+      var files = bowerFiles();
+      if(files.length) {
+        var bowerStyles = gulp.src(bowerFiles()).pipe(filter('*.css'));
+        streams.unshift(bowerStyles);
+      }
     }
 
     return series(streams)
@@ -301,8 +307,11 @@ function buildGulp() {
     }
 
     if(useBower) {
-      var bowerScripts = gulp.src(bowerFiles()).pipe(filter('*.js'));
-      streams.unshift(bowerScripts);
+      var files = bowerFiles();
+      if(files.length) {
+        var bowerScripts = gulp.src(bowerFiles()).pipe(filter('*.js'));
+        streams.unshift(bowerScripts);
+      }
     }
 
     return series(streams);
