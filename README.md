@@ -25,6 +25,25 @@ Slurpee is a configuration of gulp that enables you to quickly get up and runnin
 - `watch-gulpfile` - watches gulpfile for changes and reloads the `watch` task
   on change.
 
+## Example Usage
+
+In your gulpfile.js
+```js
+var slurpee = require('slurpee');
+
+slurpee.config.jsPaths = [
+  'lib/{pages,components}/**/*.js'
+];
+
+// ... more here, see config below
+
+slurpee.configure();
+
+var gulp = require('gulp');
+
+gulp.task('default', ['watch']);
+```
+
 ## Configuring / Default Values
 
 The default config for this project is based off of the [sik](http://github.com/rschmukler/sik) suggested
