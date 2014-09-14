@@ -13,17 +13,17 @@ Slurpee is a configuration of gulp that enables you to quickly get up and runnin
 
 ## Available Tasks
 
-- `styles` - compiles stylesheets
-- `js` - compiles js
-- `jade` - compiles all templates and moves them to `public/`
-- `indexFile` - compiles an `indexFile` (if configured) and moves it to
-  `public/index.html`
-- `assets` - moves files and images from `lib` to `public/`
-- `serve` - start a static file server
-- `build` - runs `['js', 'styles', 'jade' 'indexFile', 'jade', 'assets']`
-- `watch` - watches files for changes and livereloads them.
-- `watch-gulpfile` - watches gulpfile for changes and reloads the `watch` task
-  on change.
+
+- `slurpee-styles` - compiles stylesheets
+- `slurpee-js` - compiles js
+- `slurpee-jade` - compiles all templates and moves them to `public/`
+- `slurpee-indexFile` - compiles an `indexFile` (if configured) and moves it to
+  `slurpee-public/index.html`
+- `slurpee-assets` - moves files and images from `lib` to `public/`
+- `slurpee-serve` - start a static file server
+- `slurpee-build` - runs `['js', 'styles', 'jade' 'indexFile', 'jade', 'assets']`
+- `slurpee-watch` - watches files for changes and livereloads them.
+- `slurpee-watch-gulpfile` - watches gulpfile for changes and reloads the `watch` task
 
 ## Example Usage
 

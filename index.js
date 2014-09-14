@@ -88,7 +88,7 @@ function buildGulp() {
 
   reloadStylDefinitions();
 
-  gulp.task('styles', function() {
+  gulp.task('slurpee-styles', function() {
     reloadStylDefinitions();
     return styles()
       .pipe(surgeon.stitch(slurpee.config.cssFile))
@@ -96,21 +96,21 @@ function buildGulp() {
       .pipe(livereload({auto: false}));
   });
 
-  gulp.task('js', function() {
+  gulp.task('slurpee-js', function() {
     return scripts({js: [sourceUrl(slurpee.config.jsRootPath)]})
       .pipe(surgeon.stitch(slurpee.config.jsFile))
       .pipe(gulp.dest(slurpee.config.outputDir))
       .pipe(livereload({auto: false}));
   });
 
-  gulp.task('jade', function() {
+  gulp.task('slurpee-jade', function() {
     return gulp.src(slurpee.config.jadePaths)
       .pipe(plumber())
       .pipe(jade())
       .pipe(gulp.dest('./' + slurpee.config.outputDir + (slurpee.config.templateDir || '')));
   });
 
-  gulp.task('indexFile', function() {
+  gulp.task('slurpee-indexFile', function() {
     var indexFile = slurpee.config.indexFile;
     if(indexFile) {
       var stream = gulp.src(indexFile);
@@ -128,7 +128,7 @@ function buildGulp() {
     }
   });
 
-  gulp.task('serve', function() {
+  gulp.task('slurpee-serve', function() {
     var staticPath = slurpee.config.staticDir,
         staticPort = slurpee.config.staticPort;
 
@@ -143,7 +143,7 @@ function buildGulp() {
     }));
   });
 
-  gulp.task('assets', function() {
+  gulp.task('slurpee-assets', function() {
     var assetPaths = slurpee.config.assetPaths,
         outputDir = slurpee.config.outputDir;
 
@@ -175,7 +175,7 @@ function buildGulp() {
     return series(streams);
   });
 
-  gulp.task('build', ['js', 'styles', 'indexFile', 'jade', 'assets']);
+  gulp.task('slurpee-build', ['slurpee-js', 'slurpee-styles', 'slurpee-indexFile', 'slurpee-jade', 'slurpee-assets']);
 
   // Spawns
   for(var name in slurpee.config.spawns) {
@@ -188,7 +188,7 @@ function buildGulp() {
     });
   }
 
-  gulp.task('watch-gulpfile', function() {
+  gulp.task('slurpee-watch-gulpfile', function() {
     // Watch Gulpfile for changes
     gulp.watch('gulpfile.js', spawnChild);
     var child;
@@ -200,7 +200,7 @@ function buildGulp() {
     }
   });
 
-  gulp.task('watch', function() {
+  gulp.task('slurpee-watch', function() {
     livereload.listen(slurpee.config.liveReloadPort);
 
     var outputDir = slurpee.config.outputDir,
