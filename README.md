@@ -41,7 +41,7 @@ slurpee.configure();
 
 var gulp = require('gulp');
 
-gulp.task('default', ['watch']);
+gulp.task('default', ['slurpee-watch']);
 ```
 
 ## Configuring / Default Values
