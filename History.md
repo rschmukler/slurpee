@@ -1,4 +1,19 @@
 
+0.1.5 / 2014-09-15 
+==================
+
+ * add handling of no bower files
+ * fix hardcoded public paths
+ * fix slurpee blank template dir
+ * fix relative paths on styl watches
+ * maintain relative path of bower assets
+ * fix asset filtering on bower assets
+ * add docuentation for watch-gulpfile
+ * add watch-gulpfile task
+ * up version dep on hatchling
+ * add static server
+ * convert to plumber
+
 0.1.4 / 2014-07-17 
 ==================
  * bug fix on ignore events
