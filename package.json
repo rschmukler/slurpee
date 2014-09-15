@@ -1,6 +1,6 @@
 {
   "name": "slurpee",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Pre-configured gulp implementation",
   "main": "index.js",
   "scripts": {
