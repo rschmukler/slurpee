@@ -21,7 +21,7 @@ Slurpee is a configuration of gulp that enables you to quickly get up and runnin
   `slurpee-public/index.html`
 - `slurpee-assets` - moves files and images from `lib` to `public/`
 - `slurpee-serve` - start a static file server
-- `slurpee-build` - runs `['js', 'styles', 'jade' 'indexFile', 'jade', 'assets']`
+- `slurpee-build` - runs `['slurpee-js', 'slurpee-styles', 'slurpee-jade' 'slurpee-indexFile', 'slurpee-jade', 'slurpee-assets']`
 - `slurpee-watch` - watches files for changes and livereloads them.
 - `slurpee-watch-gulpfile` - watches gulpfile for changes and reloads the `watch` task
 
