@@ -32,6 +32,7 @@
     "gulp-jade": "~0.6.1",
     "gulp-livereload": "~2.1.0",
     "gulp-plumber": "~0.6.3",
+    "gulp-rebase": "~0.1.0",
     "gulp-rename": "~1.2.0",
     "gulp-rework": "~0.3.0",
     "gulp-source-url": "~0.1.2",
@@ -39,7 +40,7 @@
     "gulp-symlink": "~0.1.7",
     "gulp-util": "~2.2.19",
     "gulp-watch": "^0.6.8",
-    "gulp-webserver": "^0.4.0",
+    "gulp-webserver": "git://github.com/rschmukler/gulp-webserver",
     "hatchling": "~0.2.1",
     "main-bower-files": "^1.0.1",
     "rework": "~1.0.0",
@@ -53,7 +54,6 @@
     "rework-shade": "~1.4.3",
     "rework-variant": "~0.2.2",
     "stream-series": "~0.1.1",
-    "tiny-lr": "0.0.8",
-    "gulp-rebase": "~0.1.0"
+    "tiny-lr": "0.0.8"
   }
 }
