@@ -1,4 +1,10 @@
 
+0.1.6 / 2014-11-16 
+==================
+
+ * fix livereload indexfile
+ * prefix slurpee tasks
+
 0.1.5 / 2014-09-15 
 ==================
 
