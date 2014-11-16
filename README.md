@@ -69,7 +69,7 @@ project layout.
   serverJadePaths: ['lib/express-pages/**/*.jade'],
   spawns: {
   },
-  staticPath: undefined,
+  staticDir: undefined,
   staticPort: 3000,
   stylGlobals: [],
   stylPaths: ['lib/**/*.styl'],
