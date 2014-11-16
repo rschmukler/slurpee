@@ -228,7 +228,7 @@ function buildGulp() {
       .pipe(livereload({auto: false}));
 
     if(slurpee.config.indexFile) {
-      watch({glob: slurpee.config.indexFile, emitOnGlob: false}, ['indexFile']);
+      watch({glob: slurpee.config.indexFile, emitOnGlob: false}, ['slurpee-indexFile']);
     }
 
     // Watch Styl Files
