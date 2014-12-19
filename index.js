@@ -4,8 +4,10 @@ var build = require('./lib/build');
 
 var extname = require('path').extname,
     exec = require('child_process').exec,
-    pathSep = require('path').sep;
+    pathSep = require('path').sep,
+    joinPath = require('path').join;
 
+var touch = require('touchp').sync;
 var gulp = require('gulp');
 
 // Gulp plugins
@@ -89,6 +91,7 @@ function buildGulp() {
   reloadStylDefinitions();
 
   gulp.task('slurpee-styles', function() {
+    touch(joinPath(slurpee.config.outputDir, slurpee.config.cssFile));
     reloadStylDefinitions();
     return styles()
       .pipe(surgeon.stitch(slurpee.config.cssFile))
@@ -97,6 +100,7 @@ function buildGulp() {
   });
 
   gulp.task('slurpee-js', function() {
+    touch(joinPath(slurpee.config.outputDir, slurpee.config.jsFile));
     return scripts({js: [sourceUrl(slurpee.config.jsRootPath)]})
       .pipe(surgeon.stitch(slurpee.config.jsFile))
       .pipe(gulp.dest(slurpee.config.outputDir))
