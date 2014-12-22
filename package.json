@@ -55,6 +55,6 @@
     "rework-variant": "~0.2.2",
     "stream-series": "~0.1.1",
     "tiny-lr": "0.0.8",
-    "touchp": "^0.1.0"
+    "touchp": "~0.1.0"
   }
 }
