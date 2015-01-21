@@ -1,4 +1,10 @@
 
+0.1.8 / 2015-01-20
+==================
+
+  * bump filter deadlock fix
+  * fix touchp version pinning
+
 0.1.7 / 2014-12-19
 ==================
 
